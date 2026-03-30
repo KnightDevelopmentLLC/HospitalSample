@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gallery — NexaCare 2050</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* ── GALLERY PAGE ────────────────────────────────────────── */
+.gallery-tabs {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+  justify-content: center;
+}
+
+.gallery-tab {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 8px 22px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.gallery-tab.active,
+.gallery-tab:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+  background: rgba(0,212,255,0.07);
+  box-shadow: var(--glow);
+}
+
+/* Masonry-style gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 220px;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(.17,.67,.35,1.2);
+}
+
+.gallery-item.span2 { grid-column: span 2; }
+.gallery-item.span-r2 { grid-row: span 2; }
+
+.gallery-item:hover { transform: scale(1.02); z-index: 2; }
+
+.gallery-visual {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(5,7,10,0.85) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+}
+
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+
+.gallery-overlay-text h4 {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.gallery-overlay-text p {
+  font-family: var(--font-text);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.gallery-zoom-icon {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 36px; height: 36px;
+  background: rgba(0,212,255,0.15);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(10px);
+}
+.gallery-item:hover .gallery-zoom-icon { opacity: 1; }
+
+/* Unique visual designs for each gallery tile */
+.gv1 { background: linear-gradient(135deg, #050a14 0%, #001a30 50%, #002040 100%); }
+.gv2 { background: linear-gradient(135deg, #0a0510 0%, #1a0030 100%); }
+.gv3 { background: linear-gradient(135deg, #050c0a 0%, #002a1a 100%); }
+.gv4 { background: linear-gradient(135deg, #0a0800 0%, #201500 100%); }
+.gv5 { background: linear-gradient(135deg, #050c14 0%, #00172d 100%); }
+.gv6 { background: linear-gradient(135deg, #0c0508 0%, #280010 100%); }
+.gv7 { background: linear-gradient(135deg, #050a0c 0%, #001820 100%); }
+.gv8 { background: linear-gradient(135deg, #08050c 0%, #180020 100%); }
+
+/* SVG illustrations inside gallery */
+.gi-svg {
+  width: 100%; height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,7,10,0.95);
+  z-index: 3000;
+  backdrop-filter: blur(20px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+.lightbox.open { display: flex; }
+
+.lightbox-inner {
+  width: 80vw;
+  max-width: 900px;
+  height: 60vh;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--white);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: border-color 0.2s;
+}
+.lightbox-close:hover { border-color: var(--neon); color: var(--neon); }
+
+.lightbox-caption {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 180px; }
+  .gallery-item.span2  { grid-column: span 2; }
+  .gallery-item.span-r2 { grid-row: span 1; }
+}
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 200px; }
+  .gallery-item.span2  { grid-column: span 1; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">✚</div>
+    NEXA<span>CARE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="doctors.html">Doctors</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a><a href="about.html">About</a>
+  <a href="doctors.html">Doctors</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="section-label">Facility Tour</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">Inside <span>NexaCare</span></h1>
+    <p class="section-sub">A glimpse into the world's most advanced medical facility — where architecture meets technology and every space is designed around the patient.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Tabs -->
+    <div class="gallery-tabs reveal">
+      <button class="gallery-tab active">All</button>
+      <button class="gallery-tab">Facility</button>
+      <button class="gallery-tab">Technology</button>
+      <button class="gallery-tab">Surgery</button>
+      <button class="gallery-tab">Patient Suites</button>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid">
+
+      <!-- Item 1: Large - Main Atrium -->
+      <div class="gallery-item span2 reveal" onclick="openLightbox(this)">
+        <div class="gallery-visual gv1">
+          <svg class="gi-svg" viewBox="0 0 800 440" xmlns="http://www.w3.org/2000/svg">
+            <!-- Atrium scene -->
+            <defs>
+              <linearGradient id="g1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0.6"/><stop offset="100%" stop-color="#0040ff" stop-opacity="0.1"/></linearGradient>
+              <linearGradient id="g1b" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0"/><stop offset="50%" stop-color="#00d4ff" stop-opacity="0.15"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></linearGradient>
+              <filter id="blur1"><feGaussianBlur stdDeviation="3"/></filter>
+            </defs>
+            <!-- Floor grid -->
+            <g opacity="0.2">
+              <line x1="0" y1="440" x2="400" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="133" y1="440" x2="466" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="266" y1="440" x2="533" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="400" y1="440" x2="600" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="533" y1="440" x2="666" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="666" y1="440" x2="733" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+              <line x1="800" y1="440" x2="800" y2="220" stroke="#00d4ff" stroke-width="0.5"/>
+            </g>
+            <!-- Columns -->
+            <rect x="80" y="80" width="8" height="360" fill="url(#g1a)" opacity="0.7"/>
+            <rect x="200" y="60" width="8" height="380" fill="url(#g1a)" opacity="0.5"/>
+            <rect x="592" y="60" width="8" height="380" fill="url(#g1a)" opacity="0.5"/>
+            <rect x="712" y="80" width="8" height="360" fill="url(#g1a)" opacity="0.7"/>
+            <!-- Center hologram -->
+            <ellipse cx="400" cy="220" rx="80" ry="20" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+            <ellipse cx="400" cy="220" rx="80" ry="20" fill="#00d4ff" opacity="0.04"/>
+            <line x1="400" y1="220" x2="400" y2="50" stroke="#00d4ff" stroke-width="0.5" opacity="0.4"/>
+            <!-- Medical cross hologram -->
+            <rect x="388" y="80" width="24" height="80" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+            <rect x="368" y="100" width="64" height="24" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+            <rect x="392" y="84" width="16" height="72" fill="#00d4ff" opacity="0.08"/>
+            <rect x="372" y="104" width="56" height="16" fill="#00d4ff" opacity="0.08"/>
+            <!-- Glow -->
+            <circle cx="400" cy="220" r="120" fill="url(#g1b)"/>
+            <!-- Ceiling lights -->
+            <circle cx="200" cy="20" r="3" fill="#00d4ff" opacity="0.9" filter="url(#blur1)"/>
+            <circle cx="400" cy="10" r="4" fill="#00d4ff" opacity="0.8" filter="url(#blur1)"/>
+            <circle cx="600" cy="20" r="3" fill="#00d4ff" opacity="0.9" filter="url(#blur1)"/>
+            <!-- Text label -->
+            <text x="400" y="405" text-anchor="middle" fill="#00d4ff" font-size="9" opacity="0.5" letter-spacing="6" font-family="monospace">NX-ATRIUM · LEVEL 0 · SECTOR A</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Main Atrium</h4>
+              <p>The luminous heart of NexaCare — a 40-meter soaring holographic reception space.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 2: Surgery Theatre -->
+      <div class="gallery-item span-r2 reveal" data-delay="100" onclick="openLightbox(this)">
+        <div class="gallery-visual gv2">
+          <svg class="gi-svg" viewBox="0 0 400 440" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="g2a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7b61ff" stop-opacity="0.4"/><stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/></radialGradient>
+            </defs>
+            <circle cx="200" cy="220" r="150" fill="url(#g2a)"/>
+            <!-- Robotic arms -->
+            <line x1="200" y1="100" x2="140" y2="200" stroke="#7b61ff" stroke-width="2" opacity="0.7"/>
+            <line x1="140" y1="200" x2="120" y2="260" stroke="#7b61ff" stroke-width="2" opacity="0.7"/>
+            <circle cx="120" cy="260" r="6" fill="none" stroke="#7b61ff" stroke-width="1.5"/>
+            <line x1="200" y1="100" x2="260" y2="200" stroke="#7b61ff" stroke-width="2" opacity="0.7"/>
+            <line x1="260" y1="200" x2="280" y2="260" stroke="#7b61ff" stroke-width="2" opacity="0.7"/>
+            <circle cx="280" cy="260" r="6" fill="none" stroke="#7b61ff" stroke-width="1.5"/>
+            <!-- Surgical table -->
+            <rect x="130" y="270" width="140" height="20" rx="4" fill="none" stroke="#7b61ff" stroke-width="1" opacity="0.5"/>
+            <rect x="140" y="280" width="120" height="4" rx="2" fill="#7b61ff" opacity="0.15"/>
+            <!-- Target circle -->
+            <circle cx="200" cy="220" r="40" fill="none" stroke="#7b61ff" stroke-width="0.5" opacity="0.4" stroke-dasharray="4 4"/>
+            <circle cx="200" cy="220" r="20" fill="none" stroke="#7b61ff" stroke-width="1" opacity="0.6"/>
+            <circle cx="200" cy="220" r="4" fill="#7b61ff" opacity="0.8"/>
+            <!-- Crosshairs -->
+            <line x1="200" y1="170" x2="200" y2="190" stroke="#7b61ff" stroke-width="1" opacity="0.5"/>
+            <line x1="200" y1="250" x2="200" y2="270" stroke="#7b61ff" stroke-width="1" opacity="0.5"/>
+            <line x1="150" y1="220" x2="170" y2="220" stroke="#7b61ff" stroke-width="1" opacity="0.5"/>
+            <line x1="230" y1="220" x2="250" y2="220" stroke="#7b61ff" stroke-width="1" opacity="0.5"/>
+            <text x="200" y="380" text-anchor="middle" fill="#7b61ff" font-size="8" opacity="0.5" letter-spacing="4" font-family="monospace">NEXABOT-7 SURGICAL</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>NexaBot-7 Theatre</h4>
+              <p>Robotic surgical suite with sub-0.1mm precision AI guidance.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 3: Diagnostics Lab -->
+      <div class="gallery-item reveal" data-delay="150" onclick="openLightbox(this)">
+        <div class="gallery-visual gv3">
+          <svg class="gi-svg" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="g3a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#00ffcc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00ffcc" stop-opacity="0"/></radialGradient></defs>
+            <circle cx="200" cy="110" r="90" fill="url(#g3a)"/>
+            <!-- DNA helix-like structure -->
+            <path d="M 120 30 Q 200 70 120 110 Q 200 150 120 190" fill="none" stroke="#00ffcc" stroke-width="1.5" opacity="0.6"/>
+            <path d="M 280 30 Q 200 70 280 110 Q 200 150 280 190" fill="none" stroke="#00ffcc" stroke-width="1.5" opacity="0.6"/>
+            <!-- Connecting rungs -->
+            <line x1="153" y1="50" x2="247" y2="50" stroke="#00ffcc" stroke-width="1" opacity="0.3"/>
+            <line x1="141" y1="70" x2="259" y2="70" stroke="#00ffcc" stroke-width="1" opacity="0.4"/>
+            <line x1="137" y1="90" x2="263" y2="90" stroke="#00ffcc" stroke-width="1" opacity="0.5"/>
+            <line x1="141" y1="110" x2="259" y2="110" stroke="#00ffcc" stroke-width="1" opacity="0.5"/>
+            <line x1="153" y1="130" x2="247" y2="130" stroke="#00ffcc" stroke-width="1" opacity="0.4"/>
+            <line x1="141" y1="150" x2="259" y2="150" stroke="#00ffcc" stroke-width="1" opacity="0.3"/>
+            <line x1="137" y1="170" x2="263" y2="170" stroke="#00ffcc" stroke-width="1" opacity="0.2"/>
+            <text x="200" y="210" text-anchor="middle" fill="#00ffcc" font-size="7" opacity="0.5" letter-spacing="5" font-family="monospace">GENOMIC SEQUENCING LAB</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Genomic Lab</h4><p>4-hour full genome sequencing.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 4: ICU -->
+      <div class="gallery-item reveal" data-delay="200" onclick="openLightbox(this)">
+        <div class="gallery-visual gv4">
+          <svg class="gi-svg" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- Heartbeat / EKG line -->
+            <path d="M 20 110 L 80 110 L 100 60 L 120 160 L 140 80 L 160 140 L 180 110 L 240 110 L 260 70 L 280 150 L 300 100 L 320 120 L 380 120" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.8"/>
+            <path d="M 20 110 L 80 110 L 100 60 L 120 160 L 140 80 L 160 140 L 180 110 L 240 110 L 260 70 L 280 150 L 300 100 L 320 120 L 380 120" fill="none" stroke="#00d4ff" stroke-width="6" opacity="0.06"/>
+            <!-- Monitor frame -->
+            <rect x="20" y="20" width="360" height="180" rx="8" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.2"/>
+            <!-- Stats -->
+            <text x="40" y="45" fill="#00d4ff" font-size="8" opacity="0.5" font-family="monospace">HR: 72 bpm</text>
+            <text x="40" y="58" fill="#00ffcc" font-size="8" opacity="0.5" font-family="monospace">SpO₂: 98%</text>
+            <text x="300" y="45" fill="#00d4ff" font-size="8" opacity="0.5" font-family="monospace">BP: 118/76</text>
+            <text x="300" y="58" fill="#00ffcc" font-size="8" opacity="0.5" font-family="monospace">TEMP: 36.8°</text>
+            <text x="200" y="210" text-anchor="middle" fill="#00d4ff" font-size="7" opacity="0.5" letter-spacing="5" font-family="monospace">NEXA-ICU · VITAL MONITOR</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Nexa-ICU</h4><p>AI-monitored intensive care unit.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 5: Imaging (wide) -->
+      <div class="gallery-item span2 reveal" data-delay="100" onclick="openLightbox(this)">
+        <div class="gallery-visual gv5">
+          <svg class="gi-svg" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="g5a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0080ff" stop-opacity="0.25"/><stop offset="100%" stop-color="#0080ff" stop-opacity="0"/></radialGradient>
+            </defs>
+            <!-- MRI-like rings -->
+            <circle cx="400" cy="110" r="100" fill="none" stroke="#0080ff" stroke-width="8" opacity="0.1"/>
+            <circle cx="400" cy="110" r="80" fill="none" stroke="#00d4ff" stroke-width="4" opacity="0.15"/>
+            <circle cx="400" cy="110" r="60" fill="none" stroke="#0080ff" stroke-width="2" opacity="0.2"/>
+            <circle cx="400" cy="110" r="40" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+            <circle cx="400" cy="110" r="20" fill="none" stroke="#0080ff" stroke-width="1" opacity="0.4"/>
+            <circle cx="400" cy="110" r="100" fill="url(#g5a)"/>
+            <!-- Scan lines -->
+            <line x1="50" y1="110" x2="280" y2="110" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+            <line x1="520" y1="110" x2="750" y2="110" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+            <!-- Data readouts -->
+            <text x="80" y="80" fill="#00d4ff" font-size="8" opacity="0.4" font-family="monospace">QUANTUM SCAN</text>
+            <text x="80" y="95" fill="#00ffcc" font-size="8" opacity="0.4" font-family="monospace">RES: 0.001mm</text>
+            <text x="80" y="110" fill="#00d4ff" font-size="8" opacity="0.4" font-family="monospace">MODE: FULL-BODY</text>
+            <text x="550" y="80" fill="#00d4ff" font-size="8" opacity="0.4" font-family="monospace">TIME: 00:04:32</text>
+            <text x="550" y="95" fill="#00ffcc" font-size="8" opacity="0.4" font-family="monospace">STATUS: COMPLETE</text>
+            <text x="400" y="205" text-anchor="middle" fill="#0080ff" font-size="8" opacity="0.4" letter-spacing="6" font-family="monospace">QUANTUM IMAGING SUITE · 0.001mm RESOLUTION</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Quantum Imaging Suite</h4>
+              <p>Sub-millimetre whole-body scanning completed in under 5 minutes.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 6: Patient Suite -->
+      <div class="gallery-item reveal" onclick="openLightbox(this)">
+        <div class="gallery-visual gv6">
+          <svg class="gi-svg" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- Room outline -->
+            <rect x="30" y="30" width="340" height="160" rx="4" fill="none" stroke="#ff3264" stroke-width="0.5" opacity="0.3"/>
+            <!-- Bed -->
+            <rect x="60" y="120" width="160" height="50" rx="4" fill="none" stroke="#ff3264" stroke-width="1" opacity="0.5"/>
+            <rect x="60" y="120" width="160" height="14" rx="2" fill="#ff3264" opacity="0.08"/>
+            <!-- Window -->
+            <rect x="240" y="50" width="100" height="80" rx="4" fill="none" stroke="#ff3264" stroke-width="0.5" opacity="0.2"/>
+            <line x1="290" y1="50" x2="290" y2="130" stroke="#ff3264" stroke-width="0.5" opacity="0.2"/>
+            <line x1="240" y1="90" x2="340" y2="90" stroke="#ff3264" stroke-width="0.5" opacity="0.2"/>
+            <!-- Glow from window -->
+            <rect x="240" y="50" width="100" height="80" fill="#ff3264" opacity="0.03"/>
+            <text x="200" y="205" text-anchor="middle" fill="#ff3264" font-size="7" opacity="0.4" letter-spacing="5" font-family="monospace">PREMIUM PATIENT SUITE</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Executive Suite</h4><p>Hotel-grade patient recovery suites with smart environment.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 7: Pharmacy -->
+      <div class="gallery-item reveal" data-delay="100" onclick="openLightbox(this)">
+        <div class="gallery-visual gv7">
+          <svg class="gi-svg" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- Nano molecule -->
+            <circle cx="200" cy="110" r="16" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+            <circle cx="200" cy="110" r="6" fill="#00d4ff" opacity="0.4"/>
+            <line x1="200" y1="110" x2="160" y2="80" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <circle cx="160" cy="80" r="10" fill="none" stroke="#00ffcc" stroke-width="1.2" opacity="0.6"/>
+            <line x1="200" y1="110" x2="240" y2="80" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <circle cx="240" cy="80" r="10" fill="none" stroke="#0080ff" stroke-width="1.2" opacity="0.6"/>
+            <line x1="200" y1="110" x2="200" y2="155" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <circle cx="200" cy="155" r="10" fill="none" stroke="#00ffcc" stroke-width="1.2" opacity="0.6"/>
+            <line x1="200" y1="110" x2="150" y2="140" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <circle cx="150" cy="140" r="8" fill="none" stroke="#0080ff" stroke-width="1" opacity="0.5"/>
+            <line x1="200" y1="110" x2="250" y2="140" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <circle cx="250" cy="140" r="8" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <text x="200" y="205" text-anchor="middle" fill="#00d4ff" font-size="7" opacity="0.5" letter-spacing="5" font-family="monospace">NANO-PHARMACY · MOLECULAR LAB</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>Nano-Pharmacy</h4><p>Molecular-precision drug synthesis on-site.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+      <!-- Item 8: Research Centre -->
+      <div class="gallery-item reveal" data-delay="200" onclick="openLightbox(this)">
+        <div class="gallery-visual gv8">
+          <svg class="gi-svg" viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <!-- AI brain network -->
+            <circle cx="200" cy="110" r="20" fill="none" stroke="#7b61ff" stroke-width="1.5" opacity="0.8"/>
+            <circle cx="200" cy="110" r="8" fill="#7b61ff" opacity="0.3"/>
+            <g opacity="0.5">
+              <circle cx="130" cy="70" r="10" fill="none" stroke="#7b61ff" stroke-width="1"/>
+              <circle cx="270" cy="70" r="10" fill="none" stroke="#7b61ff" stroke-width="1"/>
+              <circle cx="120" cy="150" r="10" fill="none" stroke="#00d4ff" stroke-width="1"/>
+              <circle cx="280" cy="150" r="10" fill="none" stroke="#00d4ff" stroke-width="1"/>
+              <circle cx="200" cy="50" r="8" fill="none" stroke="#00ffcc" stroke-width="1"/>
+              <circle cx="200" cy="170" r="8" fill="none" stroke="#00ffcc" stroke-width="1"/>
+            </g>
+            <g opacity="0.3" stroke="#7b61ff" stroke-width="0.8">
+              <line x1="200" y1="110" x2="130" y2="70"/>
+              <line x1="200" y1="110" x2="270" y2="70"/>
+              <line x1="200" y1="110" x2="120" y2="150"/>
+              <line x1="200" y1="110" x2="280" y2="150"/>
+              <line x1="200" y1="110" x2="200" y2="50"/>
+              <line x1="200" y1="110" x2="200" y2="170"/>
+              <line x1="130" y1="70" x2="200" y2="50"/>
+              <line x1="270" y1="70" x2="200" y2="50"/>
+              <line x1="120" y1="150" x2="200" y2="170"/>
+              <line x1="280" y1="150" x2="200" y2="170"/>
+            </g>
+            <text x="200" y="205" text-anchor="middle" fill="#7b61ff" font-size="7" opacity="0.5" letter-spacing="5" font-family="monospace">AI RESEARCH · NEURAL NETWORK HQ</text>
+          </svg>
+          <div class="gallery-overlay">
+            <div class="gallery-overlay-text">
+              <h4>AI Research Centre</h4><p>The birthplace of Nexa-DX and future diagnostic breakthroughs.</p>
+            </div>
+          </div>
+          <div class="gallery-zoom-icon">⊕</div>
+        </div>
+      </div>
+
+    </div><!-- /gallery-grid -->
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-inner" id="lightbox-inner"></div>
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0.5rem;">
+        <div class="nav-logo-icon">✚</div>NEXA<span style="color:var(--white)">CARE</span>
+      </div>
+      <p>The world's most advanced medical system, combining AI, robotics, and human compassion.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4>
+      <a href="index.html">Home</a><a href="about.html">About</a>
+      <a href="doctors.html">Doctors</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col"><h4>Services</h4>
+      <a href="#">AI Neurology</a><a href="#">Cardio Intelligence</a>
+      <a href="#">Genomic Medicine</a><a href="#">Robotic Surgery</a>
+    </div>
+    <div class="footer-col"><h4>Contact</h4>
+      <a href="tel:+18009392273">+1 800 NEXA CARE</a>
+      <a href="mailto:info@nexacare.med">info@nexacare.med</a>
+      <a href="#">2050 Future Blvd, Neo City</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2050 NexaCare Medical Systems. All rights reserved.</span>
+    <span>Privacy · Terms · Accessibility</span>
+  </div>
+</footer>
+
+<button class="chatbot-btn" id="chatbot-btn">🤖</button>
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chat-header">
+    <div class="chat-header-icon">🤖</div>
+    <div class="chat-header-info"><h4>NEXA AI ASSISTANT</h4><p>● Online · Replies instantly</p></div>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">Hello! I'm Nexa. How can I help you today?</div>
+  </div>
+  <div class="chat-options">
+    <button class="chat-opt" data-key="appointment"><span>📅</span> Book Appointment</button>
+    <button class="chat-opt" data-key="availability"><span>🩺</span> Doctor Availability</button>
+    <button class="chat-opt" data-key="emergency"><span>🚨</span> Emergency</button>
+    <button class="chat-opt" data-key="location"><span>📍</span> Location</button>
+    <button class="chat-opt" data-key="call"><span>📞</span> Call Now</button>
+  </div>
+</div>
+
+<script>
+// Gallery tabs
+document.querySelectorAll('.gallery-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Lightbox
+function openLightbox(card) {
+  const viz   = card.querySelector('.gallery-visual').cloneNode(true);
+  const title = card.querySelector('h4')?.textContent || 'NexaCare Facility';
+  const inner = document.getElementById('lightbox-inner');
+  const cap   = document.getElementById('lightbox-caption');
+  inner.innerHTML = '';
+  inner.appendChild(viz);
+  cap.textContent = title;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(e) {
+  if (!e || e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+</script>
+<script src="shared.js"></script>
+</body>
+</html>

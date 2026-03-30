@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — NexaCare 2050</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+/* ── ABOUT PAGE ─────────────────────────────────────────── */
+.mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto 5rem;
+}
+
+.mission-card {
+  padding: 2.5rem;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-card::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon), var(--neon2));
+  box-shadow: var(--glow);
+}
+
+.mission-card-label {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 1rem;
+}
+
+.mission-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.mission-card p {
+  font-family: var(--font-text);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* ── Stats ── */
+.stats-band {
+  background: linear-gradient(135deg, rgba(0,128,255,0.08), rgba(0,212,255,0.04));
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 4rem 2.5rem;
+  margin-bottom: 5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stat-item h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--neon);
+  text-shadow: var(--glow);
+  margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Timeline ── */
+.timeline-section {
+  padding: 0 2.5rem 6rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 3rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--neon), rgba(0,212,255,0.1));
+  box-shadow: var(--glow);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 3.5rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -2.7rem;
+  top: 4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 15px var(--neon);
+  border: 2px solid var(--bg);
+}
+
+.timeline-year {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--neon);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-item h4 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-item p {
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+/* ── Values ── */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 3rem auto 0;
+}
+
+.value-card {
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.value-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.value-card h4 {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.75rem;
+}
+
+.value-card p {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ── Leadership ── */
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 3rem auto 0;
+}
+
+.leader-card {
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.leader-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bg);
+}
+
+.leader-card h4 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.leader-role {
+  font-family: var(--font-text);
+  font-size: 0.8rem;
+  color: var(--neon);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.leader-card p {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .stats-grid      { grid-template-columns: repeat(2, 1fr); }
+  .values-grid     { grid-template-columns: 1fr 1fr; }
+  .leadership-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .mission-grid    { grid-template-columns: 1fr; }
+  .stats-grid      { grid-template-columns: 1fr 1fr; }
+  .values-grid     { grid-template-columns: 1fr; }
+  .leadership-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">✚</div>
+    NEXA<span>CARE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="doctors.html">Doctors</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="doctors.html">Doctors</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="section-label">Who We Are</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">The Hospital <span>Built for 2050</span></h1>
+    <p class="section-sub">Founded on the belief that medicine should evolve at the speed of human need — NexaCare stands at the intersection of biological science and quantum technology.</p>
+  </div>
+</div>
+
+<!-- MISSION & VISION -->
+<section class="section">
+  <div class="mission-grid">
+    <div class="mission-card glass-card reveal">
+      <div class="mission-card-label">Our Mission</div>
+      <h3>Democratising Advanced Healthcare</h3>
+      <p>We believe every human being deserves access to the most advanced medical care on Earth. Our mission is to make AI-powered, precision medicine universally accessible — regardless of geography, language, or economic status.</p>
+      <br/>
+      <p>NexaCare's intelligent systems are deployed across 47 countries, serving patients in 28 languages through holographic, in-person, and nano-sensor-connected care pathways.</p>
+    </div>
+    <div class="mission-card glass-card reveal" data-delay="150">
+      <div class="mission-card-label">Our Vision</div>
+      <h3>A World Without Preventable Disease</h3>
+      <p>By 2060, NexaCare aims to eliminate the top 12 preventable disease categories through continuous AI monitoring, early genomic intervention, and our global health prediction network.</p>
+      <br/>
+      <p>We envision a future where your health profile is monitored in real-time and conditions are caught — and corrected — before they ever become symptomatic.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <h2><span data-target="120000" data-suffix="+">0+</span></h2>
+      <p>Patients Treated</p>
+    </div>
+    <div class="stat-item reveal" data-delay="100">
+      <h2><span data-target="25" data-suffix=" Yrs">0 Yrs</span></h2>
+      <p>Years of Innovation</p>
+    </div>
+    <div class="stat-item reveal" data-delay="200">
+      <h2><span data-target="3000" data-suffix="+">0+</span></h2>
+      <p>Global Specialists</p>
+    </div>
+    <div class="stat-item reveal" data-delay="300">
+      <h2><span data-target="98" data-suffix="%">0%</span></h2>
+      <p>Patient Satisfaction</p>
+    </div>
+  </div>
+</div>
+
+<!-- TIMELINE -->
+<section class="section" style="padding-bottom:2rem;">
+  <div class="container">
+    <div class="section-label reveal">Our Journey</div>
+    <h2 class="section-title reveal">25 Years of <span>Breakthrough</span></h2>
+    <div class="neon-divider"></div>
+  </div>
+</section>
+
+<div class="timeline-section">
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2025 — Founding</div>
+      <h4>NexaCare Medical Systems Established</h4>
+      <p>Founded by Dr. Yuki Chen and a team of 12 biomedical AI researchers with the goal of creating the world's first AI-native hospital system.</p>
+    </div>
+    <div class="timeline-item reveal" data-delay="100">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2028 — Breakthrough</div>
+      <h4>First AI Diagnostic Engine Goes Live</h4>
+      <p>Our proprietary Nexa-DX diagnostic AI achieved 97.3% accuracy across 340 disease categories — surpassing specialist-level diagnosis for the first time.</p>
+    </div>
+    <div class="timeline-item reveal" data-delay="150">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2033 — Expansion</div>
+      <h4>Global Network Launched Across 20 Countries</h4>
+      <p>NexaCare's holographic consultation platform went live, enabling instant specialist access for patients in remote and underserved regions worldwide.</p>
+    </div>
+    <div class="timeline-item reveal" data-delay="200">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2038 — Innovation</div>
+      <h4>Nano Therapeutics Division Opens</h4>
+      <p>The world's first clinical-grade nano-drug delivery platform entered patient trials, achieving 99.1% targeted delivery accuracy with near-zero side effects.</p>
+    </div>
+    <div class="timeline-item reveal" data-delay="250">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">2045 — Milestone</div>
+      <h4>100,000 Patients Milestone & WHO Partnership</h4>
+      <p>NexaCare treated its 100,000th patient and signed a landmark partnership with the WHO to deploy AI diagnostics in 150 developing nations.</p>
+    </div>
+    <div class="timeline-item reveal" data-delay="300">
+      <div class="timeline-dot" style="background:var(--neon3);box-shadow:0 0 15px var(--neon3);"></div>
+      <div class="timeline-year" style="color:var(--neon3);">2050 — Today</div>
+      <h4>NexaCare Neo City Flagship Opens</h4>
+      <p>The most advanced hospital facility ever constructed opens, featuring quantum-encrypted records, robotic surgery theatres, and real-time genomic sequencing for every patient.</p>
+    </div>
+  </div>
+</div>
+
+<!-- VALUES -->
+<section class="section">
+  <div class="container">
+    <div class="section-label reveal" style="text-align:center">Core Principles</div>
+    <h2 class="section-title reveal" style="text-align:center">Our <span>Values</span></h2>
+    <div class="values-grid">
+      <div class="value-card glass-card reveal">
+        <span class="value-icon">⚗️</span>
+        <h4>Scientific Integrity</h4>
+        <p>Every decision we make is backed by peer-reviewed evidence, clinical data, and real-world outcomes — never speculation.</p>
+      </div>
+      <div class="value-card glass-card reveal" data-delay="100">
+        <span class="value-icon">🤝</span>
+        <h4>Human Compassion</h4>
+        <p>Technology enhances our care; it never replaces the human empathy that sits at the heart of every patient relationship.</p>
+      </div>
+      <div class="value-card glass-card reveal" data-delay="200">
+        <span class="value-icon">♾️</span>
+        <h4>Continuous Innovation</h4>
+        <p>We invest 22% of annual revenue into R&D, ensuring NexaCare remains at the absolute frontier of medical science.</p>
+      </div>
+      <div class="value-card glass-card reveal" data-delay="0">
+        <span class="value-icon">🌍</span>
+        <h4>Universal Access</h4>
+        <p>Advanced care belongs to all humans. Our pricing model and global network ensure geography is never a barrier to treatment.</p>
+      </div>
+      <div class="value-card glass-card reveal" data-delay="100">
+        <span class="value-icon">🔒</span>
+        <h4>Privacy First</h4>
+        <p>Quantum-encrypted, patient-owned health data. We will never monetize, sell, or share your medical information.</p>
+      </div>
+      <div class="value-card glass-card reveal" data-delay="200">
+        <span class="value-icon">🌱</span>
+        <h4>Sustainable Medicine</h4>
+        <p>Carbon-neutral operations by 2040. Our facilities run on clean fusion energy, and we are certified net-zero across the full supply chain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-label reveal" style="text-align:center">The Team</div>
+    <h2 class="section-title reveal" style="text-align:center">Visionary <span>Leadership</span></h2>
+    <div class="leadership-grid">
+      <div class="leader-card glass-card tilt-card reveal">
+        <div class="leader-avatar" style="background:linear-gradient(135deg,var(--neon2),var(--neon));">YC</div>
+        <h4>Dr. Yuki Chen</h4>
+        <div class="leader-role">Founder & Chief Medical Officer</div>
+        <p>Neuroscientist turned AI pioneer. Former MIT Media Lab faculty. Author of "The Quantum Body" — the most cited medical text of the 2040s.</p>
+      </div>
+      <div class="leader-card glass-card tilt-card reveal" data-delay="150">
+        <div class="leader-avatar" style="background:linear-gradient(135deg,#7b61ff,var(--neon3));">RM</div>
+        <h4>Dr. Ren Maddox</h4>
+        <div class="leader-role">Chief Technology Officer</div>
+        <p>Quantum computing architect and former DeepMind principal researcher. Designed the Nexa-DX diagnostic engine — the world's most accurate medical AI.</p>
+      </div>
+      <div class="leader-card glass-card tilt-card reveal" data-delay="300">
+        <div class="leader-avatar" style="background:linear-gradient(135deg,var(--neon3),var(--neon2));">AO</div>
+        <h4>Dr. Amara Osei</h4>
+        <div class="leader-role">Chief Patient Officer</div>
+        <p>Global health equity advocate and genomics specialist. Led NexaCare's expansion into 30 developing nations, treating 45,000+ underserved patients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0.5rem;">
+        <div class="nav-logo-icon">✚</div>
+        NEXA<span style="color:var(--white)">CARE</span>
+      </div>
+      <p>The world's most advanced medical system, combining AI, robotics, and human compassion to deliver extraordinary care.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="doctors.html">Doctors</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#">AI Neurology</a>
+      <a href="#">Cardio Intelligence</a>
+      <a href="#">Genomic Medicine</a>
+      <a href="#">Robotic Surgery</a>
+      <a href="#">Nano Therapeutics</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="tel:+18009392273">+1 800 NEXA CARE</a>
+      <a href="mailto:info@nexacare.med">info@nexacare.med</a>
+      <a href="#">2050 Future Blvd, Neo City</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2050 NexaCare Medical Systems. All rights reserved.</span>
+    <span>Privacy · Terms · Accessibility</span>
+  </div>
+</footer>
+
+<!-- CHATBOT -->
+<button class="chatbot-btn" id="chatbot-btn">🤖</button>
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chat-header">
+    <div class="chat-header-icon">🤖</div>
+    <div class="chat-header-info"><h4>NEXA AI ASSISTANT</h4><p>● Online · Replies instantly</p></div>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">Hello! I'm Nexa. How can I help you today?</div>
+  </div>
+  <div class="chat-options">
+    <button class="chat-opt" data-key="appointment"><span>📅</span> Book Appointment</button>
+    <button class="chat-opt" data-key="availability"><span>🩺</span> Doctor Availability</button>
+    <button class="chat-opt" data-key="emergency"><span>🚨</span> Emergency</button>
+    <button class="chat-opt" data-key="location"><span>📍</span> Location</button>
+    <button class="chat-opt" data-key="call"><span>📞</span> Call Now</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+</body>
+</html>

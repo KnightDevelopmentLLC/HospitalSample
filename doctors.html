@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Doctors — NexaCare 2050</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* ── DOCTORS PAGE ────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+  justify-content: center;
+}
+
+.filter-btn {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  padding: 8px 20px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: rgba(0,212,255,0.08);
+  border-color: var(--neon);
+  color: var(--neon);
+  box-shadow: var(--glow);
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.doctor-card {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: default;
+  transition: transform 0.4s cubic-bezier(.17,.67,.35,1.2), box-shadow 0.3s;
+  position: relative;
+}
+
+.doctor-card:hover {
+  box-shadow: 0 0 40px rgba(0,212,255,0.15);
+}
+
+.doctor-avatar-wrap {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0,128,255,0.15), rgba(0,212,255,0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-avatar-initials {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bg);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-avatar-ring {
+  position: absolute;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,212,255,0.3);
+  animation: spin-slow 8s linear infinite;
+}
+
+.doctor-avatar-ring2 {
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,128,255,0.15);
+  animation: spin-slow 12s linear reverse infinite;
+}
+
+.doctor-card-badge {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.25);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  letter-spacing: 2px;
+  color: var(--neon);
+}
+
+.doctor-card-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.doctor-name {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.doctor-spec {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--neon);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.doctor-bio {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.doctor-stats {
+  display: flex;
+  gap: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 1rem;
+}
+
+.doctor-stat {
+  text-align: center;
+}
+
+.doctor-stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--neon);
+  font-weight: 700;
+}
+
+.doctor-stat span {
+  font-family: var(--font-text);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.doctor-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.doc-btn {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s;
+  display: block;
+}
+
+.doc-btn-primary {
+  background: linear-gradient(135deg, var(--neon2), var(--neon));
+  color: var(--bg);
+  border: none;
+  font-weight: 700;
+  box-shadow: var(--glow);
+}
+
+.doc-btn-primary:hover { box-shadow: var(--glow-strong); }
+
+.doc-btn-secondary {
+  background: transparent;
+  color: var(--neon);
+  border: 1px solid var(--glass-border);
+}
+
+.doc-btn-secondary:hover {
+  border-color: var(--neon);
+  background: rgba(0,212,255,0.05);
+}
+
+/* Hover glow border */
+.doctor-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  pointer-events: none;
+}
+.doctor-card:hover::after {
+  border-color: rgba(0,212,255,0.4);
+  box-shadow: inset 0 0 30px rgba(0,212,255,0.04);
+}
+
+/* CTA bottom */
+.join-banner {
+  margin: 4rem auto 0;
+  max-width: 1200px;
+  padding: 3.5rem 3rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(123,97,255,0.1), rgba(0,212,255,0.06));
+  border: 1px solid rgba(123,97,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.join-banner h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.join-banner p {
+  font-family: var(--font-text);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .doctors-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .doctors-grid { grid-template-columns: 1fr; }
+  .join-banner  { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">✚</div>
+    NEXA<span>CARE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="doctors.html" class="active">Doctors</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="doctors.html">Doctors</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="contact.html">Contact</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="section-label">Our Specialists</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">Elite <span>Medical Team</span></h1>
+    <p class="section-sub">3,000+ world-class specialists trained at the intersection of classical medicine and emerging technology. Each one a leader in their field.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Filter Bar -->
+    <div class="filter-bar reveal">
+      <button class="filter-btn active">All Specialists</button>
+      <button class="filter-btn">Neurology</button>
+      <button class="filter-btn">Cardiology</button>
+      <button class="filter-btn">Oncology</button>
+      <button class="filter-btn">Genomics</button>
+      <button class="filter-btn">Surgery</button>
+    </div>
+
+    <!-- Doctors Grid -->
+    <div class="doctors-grid">
+
+      <!-- Card 1 -->
+      <div class="doctor-card glass-card tilt-card reveal">
+        <div class="doctor-avatar-wrap">
+          <div class="doctor-avatar-ring"></div>
+          <div class="doctor-avatar-ring2"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,var(--neon2),var(--neon));">YC</div>
+          <div class="doctor-card-badge">Chief Neurologist</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Yuki Chen</div>
+          <div class="doctor-spec">AI Neurology · Brain-Computer Interface</div>
+          <p class="doctor-bio">Pioneer of neural-mapping technology and brain-computer interface therapy. 18 years at MIT and NexaCare. Author of 140+ peer-reviewed papers.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>18+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>4,200+</strong><span>Patients</span></div>
+            <div class="doctor-stat"><strong>99%</strong><span>Success Rate</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="doctor-card glass-card tilt-card reveal" data-delay="100">
+        <div class="doctor-avatar-wrap" style="background:linear-gradient(135deg,rgba(255,50,100,0.1),rgba(0,212,255,0.06));">
+          <div class="doctor-avatar-ring" style="border-color:rgba(255,100,100,0.3);"></div>
+          <div class="doctor-avatar-ring2" style="border-color:rgba(255,50,100,0.12);"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,#ff3264,#ff6432);">RM</div>
+          <div class="doctor-card-badge">Cardio Lead</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Ren Maddox</div>
+          <div class="doctor-spec">Cardio Intelligence · Nano-Biosensors</div>
+          <p class="doctor-bio">Architect of NexaCare's predictive cardiac AI. Pioneered nano-biosensor implants that predict cardiac events 72 hours in advance with 96% accuracy.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>15+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>3,800+</strong><span>Patients</span></div>
+            <div class="doctor-stat"><strong>97%</strong><span>Success Rate</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="doctor-card glass-card tilt-card reveal" data-delay="200">
+        <div class="doctor-avatar-wrap" style="background:linear-gradient(135deg,rgba(0,255,204,0.1),rgba(0,128,255,0.06));">
+          <div class="doctor-avatar-ring" style="border-color:rgba(0,255,204,0.3);"></div>
+          <div class="doctor-avatar-ring2" style="border-color:rgba(0,255,204,0.12);"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,var(--neon3),var(--neon2));">AO</div>
+          <div class="doctor-card-badge">Genomics Head</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Amara Osei</div>
+          <div class="doctor-spec">Genomic Medicine · Precision Oncology</div>
+          <p class="doctor-bio">Global leader in precision genomic oncology. Her targeted nano-therapy protocols have achieved complete remission in 340+ advanced cancer cases.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>20+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>5,100+</strong><span>Patients</span></div>
+            <div class="doctor-stat"><strong>98%</strong><span>Success Rate</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="doctor-card glass-card tilt-card reveal" data-delay="0">
+        <div class="doctor-avatar-wrap" style="background:linear-gradient(135deg,rgba(123,97,255,0.15),rgba(0,128,255,0.06));">
+          <div class="doctor-avatar-ring" style="border-color:rgba(123,97,255,0.35);"></div>
+          <div class="doctor-avatar-ring2" style="border-color:rgba(123,97,255,0.12);"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,#7b61ff,#0080ff);">KP</div>
+          <div class="doctor-card-badge">Robotic Surgery</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Kai Patel</div>
+          <div class="doctor-spec">Robotic Surgery · Microsurgery AI</div>
+          <p class="doctor-bio">World's leading robotic surgical practitioner. Performed 2,400+ precision surgeries with sub-0.1mm accuracy using NexaBot-7 surgical systems.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>12+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>2,400+</strong><span>Surgeries</span></div>
+            <div class="doctor-stat"><strong>100%</strong><span>Zero Complications</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="doctor-card glass-card tilt-card reveal" data-delay="100">
+        <div class="doctor-avatar-wrap" style="background:linear-gradient(135deg,rgba(0,255,100,0.1),rgba(0,212,255,0.06));">
+          <div class="doctor-avatar-ring" style="border-color:rgba(0,255,100,0.3);"></div>
+          <div class="doctor-avatar-ring2" style="border-color:rgba(0,255,100,0.1);"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,#00c864,var(--neon));">LV</div>
+          <div class="doctor-card-badge">Immunology</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Lena Vasquez</div>
+          <div class="doctor-spec">Immuno-Engineering · Nano Therapeutics</div>
+          <p class="doctor-bio">Pioneered targeted immunotherapy using engineered nano-particles. Her treatments have extended average survival in stage-4 cases by 340%.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>14+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>3,200+</strong><span>Patients</span></div>
+            <div class="doctor-stat"><strong>96%</strong><span>Success Rate</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="doctor-card glass-card tilt-card reveal" data-delay="200">
+        <div class="doctor-avatar-wrap" style="background:linear-gradient(135deg,rgba(255,180,0,0.08),rgba(0,212,255,0.06));">
+          <div class="doctor-avatar-ring" style="border-color:rgba(255,180,0,0.3);"></div>
+          <div class="doctor-avatar-ring2" style="border-color:rgba(255,180,0,0.1);"></div>
+          <div class="doctor-avatar-initials" style="background:linear-gradient(135deg,#ffb400,#ff6432);">JW</div>
+          <div class="doctor-card-badge">Psychiatry · AI Mind</div>
+        </div>
+        <div class="doctor-card-body">
+          <div class="doctor-name">Dr. Jin Wei</div>
+          <div class="doctor-spec">Neuro-Psychiatry · Digital Therapeutics</div>
+          <p class="doctor-bio">Developer of MIND-X, NexaCare's AI therapeutic platform. Specialises in treatment-resistant depression using neuro-stimulation and AI-guided CBT.</p>
+          <div class="doctor-stats">
+            <div class="doctor-stat"><strong>16+</strong><span>Years Exp.</span></div>
+            <div class="doctor-stat"><strong>6,800+</strong><span>Patients</span></div>
+            <div class="doctor-stat"><strong>94%</strong><span>Improvement Rate</span></div>
+          </div>
+          <div class="doctor-card-actions">
+            <a href="contact.html" class="doc-btn doc-btn-primary">Book</a>
+            <a href="#" class="doc-btn doc-btn-secondary">Profile</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /doctors-grid -->
+
+    <!-- Join Banner -->
+    <div class="join-banner reveal">
+      <div>
+        <h3>Join Our Medical Team</h3>
+        <p>We are always looking for exceptional specialists ready to practice at the frontier of medicine.</p>
+      </div>
+      <a href="contact.html" class="btn-outline">Apply Now →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0.5rem;">
+        <div class="nav-logo-icon">✚</div>
+        NEXA<span style="color:var(--white)">CARE</span>
+      </div>
+      <p>The world's most advanced medical system, combining AI, robotics, and human compassion to deliver extraordinary care.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <a href="index.html">Home</a><a href="about.html">About</a>
+      <a href="doctors.html">Doctors</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#">AI Neurology</a><a href="#">Cardio Intelligence</a>
+      <a href="#">Genomic Medicine</a><a href="#">Robotic Surgery</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="tel:+18009392273">+1 800 NEXA CARE</a>
+      <a href="mailto:info@nexacare.med">info@nexacare.med</a>
+      <a href="#">2050 Future Blvd, Neo City</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2050 NexaCare Medical Systems. All rights reserved.</span>
+    <span>Privacy · Terms · Accessibility</span>
+  </div>
+</footer>
+
+<!-- CHATBOT -->
+<button class="chatbot-btn" id="chatbot-btn">🤖</button>
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chat-header">
+    <div class="chat-header-icon">🤖</div>
+    <div class="chat-header-info"><h4>NEXA AI ASSISTANT</h4><p>● Online · Replies instantly</p></div>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">Hello! Need help booking with one of our specialists?</div>
+  </div>
+  <div class="chat-options">
+    <button class="chat-opt" data-key="appointment"><span>📅</span> Book Appointment</button>
+    <button class="chat-opt" data-key="availability"><span>🩺</span> Doctor Availability</button>
+    <button class="chat-opt" data-key="emergency"><span>🚨</span> Emergency</button>
+    <button class="chat-opt" data-key="location"><span>📍</span> Location</button>
+    <button class="chat-opt" data-key="call"><span>📞</span> Call Now</button>
+  </div>
+</div>
+
+<script>
+// Filter UI
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+<script src="shared.js"></script>
+</body>
+</html>

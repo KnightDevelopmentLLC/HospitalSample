@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact — NexaCare 2050</title>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+/* ── CONTACT PAGE ────────────────────────────────────────── */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ── Form ── */
+.contact-form-card {
+  padding: 3rem;
+  border-radius: 20px;
+}
+
+.contact-form-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.form-desc {
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 0.6rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  background: rgba(0,212,255,0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 13px 16px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.form-group select option { background: #080d14; color: var(--white); }
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 16px rgba(0,212,255,0.12);
+  background: rgba(0,212,255,0.05);
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(90,122,154,0.6);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--neon2), var(--neon));
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--glow);
+  transition: box-shadow 0.3s, transform 0.2s;
+  margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+  box-shadow: var(--glow-strong);
+  transform: translateY(-2px);
+}
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 2rem;
+}
+
+.form-success-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon2), var(--neon));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 1rem;
+  box-shadow: var(--glow);
+}
+
+.form-success h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.form-success p {
+  font-family: var(--font-text);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ── Contact Info Sidebar ── */
+.contact-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.info-card {
+  padding: 1.75rem 2rem;
+  border-radius: 16px;
+}
+
+.info-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h4 {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 0.5rem;
+}
+
+.info-card p,
+.info-card a {
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  color: var(--white);
+  line-height: 1.6;
+  display: block;
+}
+
+.info-card a:hover { color: var(--neon); }
+
+/* WhatsApp Button */
+.whatsapp-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #25d366, #128c3e);
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(37,211,102,0.3);
+  transition: box-shadow 0.3s, transform 0.2s;
+  text-decoration: none;
+}
+.whatsapp-btn:hover {
+  box-shadow: 0 0 40px rgba(37,211,102,0.5);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.wa-icon {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Map ── */
+.map-section {
+  padding: 0 2.5rem 6rem;
+}
+
+.map-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  height: 400px;
+  position: relative;
+}
+
+.map-container iframe {
+  width: 100%; height: 100%;
+  border: none;
+  filter: invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.1);
+}
+
+.map-overlay-badge {
+  position: absolute;
+  top: 1.25rem; left: 1.25rem;
+  background: rgba(5,7,10,0.9);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  padding: 12px 16px;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+.map-overlay-badge h5 {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--neon);
+  margin-bottom: 4px;
+}
+
+.map-overlay-badge p {
+  font-family: var(--font-text);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ── Quick contact cards ── */
+.quick-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+}
+
+.quick-card {
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.quick-card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.quick-card h4 {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--neon);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.quick-card p {
+  font-family: var(--font-text);
+  font-size: 0.9rem;
+  color: var(--white);
+  line-height: 1.6;
+}
+
+.quick-card a {
+  font-family: var(--font-text);
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: block;
+  margin-top: 4px;
+  transition: color 0.2s;
+}
+
+.quick-card a:hover { color: var(--neon); }
+
+@media (max-width: 900px) {
+  .contact-layout { grid-template-columns: 1fr; }
+  .quick-cards    { grid-template-columns: 1fr 1fr; }
+  .form-row       { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .quick-cards { grid-template-columns: 1fr; }
+  .contact-form-card { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="nav-logo-icon">✚</div>
+    NEXA<span>CARE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="doctors.html">Doctors</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+    <li><a href="contact.html" class="nav-cta">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<nav class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a><a href="about.html">About</a>
+  <a href="doctors.html">Doctors</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-content">
+    <div class="section-label">Get In Touch</div>
+    <h1 class="section-title" style="font-size:clamp(2rem,5vw,3.5rem);">Book Your <span>Appointment</span></h1>
+    <p class="section-sub">Our patient concierge team is available 24/7 to assist you with booking, questions, and emergencies. Expect a response within 2 minutes.</p>
+  </div>
+</div>
+
+<!-- QUICK CONTACT CARDS -->
+<section class="section" style="padding-bottom:3rem;">
+  <div class="quick-cards">
+    <div class="quick-card glass-card reveal">
+      <span class="quick-card-icon">📞</span>
+      <h4>Phone</h4>
+      <p><a href="tel:+18009392273">+1 800 NEXA CARE</a></p>
+      <a href="tel:+18009396911">Emergency: +1 800 NEXA-911</a>
+    </div>
+    <div class="quick-card glass-card reveal" data-delay="100">
+      <span class="quick-card-icon">✉️</span>
+      <h4>Email</h4>
+      <p><a href="mailto:info@nexacare.med">info@nexacare.med</a></p>
+      <a href="mailto:urgent@nexacare.med">urgent@nexacare.med</a>
+    </div>
+    <div class="quick-card glass-card reveal" data-delay="200">
+      <span class="quick-card-icon">📍</span>
+      <h4>Address</h4>
+      <p>2050 Future Boulevard<br/>Neo City, NC 00001</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM + SIDEBAR -->
+<section class="section" style="padding-top:0;">
+  <div class="contact-layout">
+
+    <!-- Form -->
+    <div class="contact-form-card glass-card reveal">
+      <h2>Schedule a Consultation</h2>
+      <p class="form-desc">Fill in your details and a patient care specialist will confirm your booking within 2 minutes.</p>
+
+      <div class="neon-divider"></div>
+
+      <form id="contact-form" onsubmit="handleSubmit(event)" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" placeholder="Aria" required/>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" placeholder="Nova"/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000"/>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dept">Department</label>
+          <select id="dept" name="dept">
+            <option value="">Select a department</option>
+            <option>AI Neurology</option>
+            <option>Cardio Intelligence</option>
+            <option>Genomic Medicine</option>
+            <option>Robotic Surgery</option>
+            <option>Nano Therapeutics</option>
+            <option>Neuro-Psychiatry</option>
+            <option>General Consultation</option>
+            <option>Emergency</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Preferred Date</label>
+          <input type="date" id="date" name="date"/>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Tell Us About Your Concern</label>
+          <textarea id="message" name="message" placeholder="Briefly describe your symptoms or reason for visit..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">⟡ Confirm Appointment Request</button>
+      </form>
+
+      <div class="form-success" id="form-success">
+        <div class="form-success-icon">✓</div>
+        <h3>Appointment Requested!</h3>
+        <p>Our concierge team will contact you within 2 minutes to confirm your booking at NexaCare.</p>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="contact-sidebar reveal" data-delay="200">
+
+      <!-- WhatsApp -->
+      <a href="https://wa.me/18009392273" class="whatsapp-btn" target="_blank" rel="noopener">
+        <div class="wa-icon">💬</div>
+        <div>
+          <div style="font-size:0.7rem;opacity:0.7;font-family:var(--font-display);letter-spacing:2px;margin-bottom:2px;">INSTANT RESPONSE</div>
+          Chat on WhatsApp
+        </div>
+      </a>
+
+      <!-- Hours -->
+      <div class="info-card glass-card">
+        <div class="info-card-icon">🕐</div>
+        <h4>Opening Hours</h4>
+        <p>Mon – Fri: 07:00 – 22:00</p>
+        <p>Saturday: 08:00 – 18:00</p>
+        <p>Sunday: 09:00 – 14:00</p>
+        <p style="color:var(--neon);margin-top:8px;font-size:0.8rem;">Emergency: 24 / 7 / 365</p>
+      </div>
+
+      <!-- Emergency -->
+      <div class="info-card glass-card" style="border-color:rgba(255,50,50,0.2);">
+        <div class="info-card-icon" style="background:rgba(255,50,50,0.08);border-color:rgba(255,50,50,0.2);">🚨</div>
+        <h4 style="color:#ff3264;">Emergency Line</h4>
+        <a href="tel:+18009396911" style="color:#ff3264;font-size:1.1rem;font-weight:700;font-family:var(--font-display);">+1 800 NEXA-911</a>
+        <p style="font-size:0.8rem;margin-top:6px;">Available 24/7. Do not use this form for emergencies.</p>
+      </div>
+
+      <!-- Social -->
+      <div class="info-card glass-card">
+        <div class="info-card-icon">🌐</div>
+        <h4>Connect With Us</h4>
+        <div style="display:flex;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap;">
+          <a href="#" style="display:inline-block;padding:8px 16px;border:1px solid var(--glass-border);border-radius:8px;font-size:0.8rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='var(--glass-border)'">LinkedIn</a>
+          <a href="#" style="display:inline-block;padding:8px 16px;border:1px solid var(--glass-border);border-radius:8px;font-size:0.8rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='var(--glass-border)'">Twitter / X</a>
+          <a href="#" style="display:inline-block;padding:8px 16px;border:1px solid var(--glass-border);border-radius:8px;font-size:0.8rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--neon)'" onmouseout="this.style.borderColor='var(--glass-border)'">Instagram</a>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="info-card glass-card">
+        <div class="info-card-icon">📍</div>
+        <h4>Location</h4>
+        <p>NexaCare Medical Centre</p>
+        <p>2050 Future Boulevard</p>
+        <p>Neo City, NC 00001</p>
+        <a href="https://maps.google.com" target="_blank" style="color:var(--neon);font-size:0.8rem;margin-top:8px;display:inline-block;transition:text-shadow 0.2s;" onmouseover="this.style.textShadow='0 0 10px var(--neon)'" onmouseout="this.style.textShadow='none'">Get Directions →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<div class="map-section">
+  <div class="section-label" style="text-align:center;margin-bottom:1rem;" class="reveal">Find Us</div>
+  <h2 class="section-title reveal" style="text-align:center;margin-bottom:2.5rem;">Our <span>Location</span></h2>
+  <div class="map-container reveal">
+    <div class="map-overlay-badge">
+      <h5>NexaCare Medical Centre</h5>
+      <p>2050 Future Blvd, Neo City</p>
+    </div>
+    <!-- Google Maps embed — replace src with real coordinates for production -->
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387190.2799060599!2d-74.25987522024685!3d40.697670062963784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1712000000000"
+      allowfullscreen
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="NexaCare Location Map"
+    ></iframe>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0.5rem;">
+        <div class="nav-logo-icon">✚</div>NEXA<span style="color:var(--white)">CARE</span>
+      </div>
+      <p>The world's most advanced medical system, combining AI, robotics, and human compassion.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4>
+      <a href="index.html">Home</a><a href="about.html">About</a>
+      <a href="doctors.html">Doctors</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col"><h4>Services</h4>
+      <a href="#">AI Neurology</a><a href="#">Cardio Intelligence</a>
+      <a href="#">Genomic Medicine</a><a href="#">Robotic Surgery</a>
+    </div>
+    <div class="footer-col"><h4>Contact</h4>
+      <a href="tel:+18009392273">+1 800 NEXA CARE</a>
+      <a href="mailto:info@nexacare.med">info@nexacare.med</a>
+      <a href="#">2050 Future Blvd, Neo City</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2050 NexaCare Medical Systems. All rights reserved.</span>
+    <span>Privacy · Terms · Accessibility</span>
+  </div>
+</footer>
+
+<button class="chatbot-btn" id="chatbot-btn">🤖</button>
+<div class="chatbot-panel" id="chatbot-panel">
+  <div class="chat-header">
+    <div class="chat-header-icon">🤖</div>
+    <div class="chat-header-info"><h4>NEXA AI ASSISTANT</h4><p>● Online · Replies instantly</p></div>
+    <button class="chat-close" id="chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <div class="chat-msg bot">Need help with your booking? I can assist right here!</div>
+  </div>
+  <div class="chat-options">
+    <button class="chat-opt" data-key="appointment"><span>📅</span> Book Appointment</button>
+    <button class="chat-opt" data-key="availability"><span>🩺</span> Doctor Availability</button>
+    <button class="chat-opt" data-key="emergency"><span>🚨</span> Emergency</button>
+    <button class="chat-opt" data-key="location"><span>📍</span> Location</button>
+    <button class="chat-opt" data-key="call"><span>📞</span> Call Now</button>
+  </div>
+</div>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contact-form');
+  const success = document.getElementById('form-success');
+  form.style.display = 'none';
+  success.style.display = 'block';
+}
+
+// Set min date to today
+const dateInput = document.getElementById('date');
+if (dateInput) {
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.min = today;
+}
+</script>
+<script src="shared.js"></script>
+</body>
+</html>
